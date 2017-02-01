@@ -7,7 +7,7 @@ Minesweeper game built in node.js for terminal.
 
 ```
 cd minesweeper-nodejs
-node minesweeper_node
+node index.js
 ```
 
 ### Instructions
