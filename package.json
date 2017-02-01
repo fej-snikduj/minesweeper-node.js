@@ -1,0 +1,28 @@
+{
+  "name": "minesweeper_nodejs",
+  "version": "0.0.1",
+  "description": "A text based minesweeper game for the terminal using node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fej-snikduj/minesweeper-node.js.git"
+  },
+  "keywords": [
+    "minesweeper",
+    "game",
+    "terminal"
+  ],
+  "author": "Jeff Judkins",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fej-snikduj/minesweeper-node.js/issues"
+  },
+  "homepage": "https://github.com/fej-snikduj/minesweeper-node.js#readme",
+  "devDependencies": {
+    "eslint": "^3.14.1"
+  }
+}

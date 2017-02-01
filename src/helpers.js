@@ -1,4 +1,4 @@
-function promptForBoardSize() {
+function promptForBoardSize(rl) {
   rl.question(
         'How big of board would you like to play with?  Please input an' +
         'integer (5 through 15)\n',
@@ -14,7 +14,7 @@ function promptForBoardSize() {
 }
 
 
-function promptForDifficultyLevel() {
+function promptForDifficultyLevel(rl) {
   rl.question(
         'What difficulty level would you like to play at?  1, 2 or 3)\n',
         function(answer) {
