@@ -1,18 +1,3 @@
-'use strict';
-var readline = require('readline');
-var rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: true
-});
-readline.emitKeypressEvents(process.stdin);
-
-
-
-//list of global game variables
-var boardSize, difficultyLevel, numOfMines, mineBoard, viewBoard, winningCount, cursorLocation, previousCursorLocation, endGameBoolean, winningCount, uncoveredCount;
-var gameCount = 0;
-
 
 //clear terminal before starting
 clearConsole();
@@ -33,59 +18,11 @@ function startGame() {
     initializeKeypressListeners();
   }
   renderBoardToConsole();
-}
-
-function promptForBoardSize() {
-  rl.question('How big of board would you like to play with?  Please input an integer (5 through 15)\n', function(answer) {
-    if (answer >= 5 && answer <= 15) {
-      boardSize = answer;
-      console.log('playing with board size ', boardSize);
-      promptForDifficultyLevel();
-      return;
-    } else {
-      console.log('invalid input, prompting again....');
-      promptForBoardSize();
-    }
-  })
-}
-
-function promptForDifficultyLevel() {
-  rl.question('What difficulty level would you like to play at?  1, 2 or 3)\n', function(answer) {
-    if (answer === '1' || answer === '2' || answer === '3') {
-      difficultyLevel = answer;
-      startGame();
-      return;
-    } else {
-      console.log(answer,'answer')
-      console.log('invalid input, prompting again....');
-      promptForDifficultyLevel();
-    }
-  })
-}
-
-function calculateNumberOfMinesFromDifficulty() {
-  switch(difficultyLevel) {
-    case '1':
-      numOfMines = Math.floor(boardSize * boardSize * 0.10);
-      break;
-    case '2':
-      numOfMines = Math.floor(boardSize * boardSize * 0.15);
-      break;
-    case '3':
-      numOfMines = Math.floor(boardSize * boardSize * .2);
-      break;
-  }
-
-  winningCount = boardSize * boardSize - numOfMines;
-}
-
-function setInitialVariables() {
-  cursorLocation = {row: 0, column: 0};
-  previousCursorLocation = {row: 0, column: 0};
-  endGameBoolean = false;
-  uncoveredCount = 0;
 
 }
+
+
+
 
 function initializeMineBoard() {
   createEmptyMineBoard();
@@ -93,16 +30,7 @@ function initializeMineBoard() {
   fillInNumbers();
 }
 
-function createEmptyMineBoard() {
-  mineBoard= [];
-  //create empty array with board size
-  for (var i = 0; i < boardSize; i++) {
-    mineBoard[i] = [];
-    for (var j = 0; j < boardSize; j++) {
-      mineBoard[i][j] = 0;
-    }
-  }
-}
+
 
 function addMines() {
   //generate random mine placement
@@ -173,7 +101,7 @@ function fillInNumbers() {
         }
       }
       mineBoard[row][column] = numOfBombsInVicinity;
-      
+
     }
   }
 }
@@ -215,7 +143,7 @@ function initializeKeypressListeners() {
         break;
       case 'r':
         gameCount++;
-        rl.clearLine()
+        rl.clearLine();
         promptForBoardSize();
         break;
       case 'm':
@@ -252,12 +180,12 @@ function updateCursorView() {
     //remove brackets from previous cursor location
     if(viewBoard[previousCursorLocation.row][previousCursorLocation.column].match(/_/)) {
       viewBoard[previousCursorLocation.row][previousCursorLocation.column] = viewBoard[previousCursorLocation.row][previousCursorLocation.column].replace('_', '');
-    
-    } 
+
+    }
   }
   if (!endGameBoolean) {
     //set current cursor location
-    viewBoard[cursorLocation.row][cursorLocation.column] = viewBoard[cursorLocation.row][cursorLocation.column] + '_'
+    viewBoard[cursorLocation.row][cursorLocation.column] = viewBoard[cursorLocation.row][cursorLocation.column] + '_';
   }
 }
 
@@ -290,7 +218,7 @@ function checkForBombs() {
 function markSpace() {
   if (viewBoard[cursorLocation.row][cursorLocation.column] === '[  ]_'){
     viewBoard[cursorLocation.row][cursorLocation.column] = ' !b!_';
-    renderBoardToConsole(viewBoard); 
+    renderBoardToConsole(viewBoard);
   } else if (viewBoard[cursorLocation.row][cursorLocation.column] === ' !b!_') {
     viewBoard[cursorLocation.row][cursorLocation.column] = '[  ]_';
     renderBoardToConsole(viewBoard);
@@ -317,7 +245,7 @@ function updateViewBoard(row, column, alreadyCoveredMapObj) {
   if (mineBoard[row][column] === '*') {
     return;
   }
-  
+
   //base case is when the square is anything but a zero - we only continue if it is a zero
   if(mineBoard[row][column] !== 0) {
     viewBoard[row][column] = ' ' + mineBoard[row][column] + '  ';
@@ -353,8 +281,4 @@ function winGame() {
   clearConsole();
   console.log('YOU WON!!!\nPress "N" to play again.\nPress "R" to reset Board Size and or Level".\nPress "Ctrl + c" to exit game');
 
-}
-
-function clearConsole() {
-  console.log("\x1B[2J");
 }
