@@ -265,6 +265,7 @@ class MineBoard {
 
     // Assign bomb to variable for use inside of uncoverdAdjacentSpaces function
     let bomb = this.bomb;
+    let uncoveredSpace = this.uncoveredSpace;
 
     //if space is zero, uncover adjacent spaces as well
     if (mineBoard[row][col] === 0) {
@@ -303,7 +304,7 @@ class MineBoard {
 
       // Space is a zero
       // Uncover, increase count, and continue
-      viewBoard[rowToCheck][colToCheck] = mineBoard[rowToCheck][colToCheck];
+      viewBoard[rowToCheck][colToCheck] = uncoveredSpace;
       props.uncoveredCount++;
 
       // Call function on all adjacent spaces
