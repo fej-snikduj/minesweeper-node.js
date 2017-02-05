@@ -1,7 +1,7 @@
 'use strict';
-const helpers = require('./src/helpers');
-const MineBoard = require('./src/MineBoard').MineBoard;
-
+const { promptForBoardSize, promptForDifficultyLevel, promptUserForInputs } =
+    require('./src/helpers');
+const { MineBoard } = require('./src/MineBoard');
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
@@ -9,34 +9,49 @@ const rl = readline.createInterface({
   terminal: true
 });
 
+// Allow keypress events to be emitted through stdin
 readline.emitKeypressEvents(process.stdin);
 
-// Set inital input state to readline mode
-let readLineMode = true;
+// Deactivate gameplay key bindings until game starts
+let gamePlay = false;
 
-// Declare functions for switching input mode between key event listener and
-// readline mode
-function switchToReadLineMode() {
-  readLineMode = true;
+// Declare functions for toggling gameplay key bindings
+function toggleGamePlayOn() {
+  gamePlay = true;
+}
+function toggleGamePlayOff() {
+  gamePlay = false;
 }
 
-function switchToKeypressMode() {
-  readLineMode = false;
-}
-
-//Initialze kepress listener
+// Initialze kepress listeners
 process.stdin.on('keypress', (str, key) => {
   if (key.ctrl && key.name === 'c') {
     process.exit();
   }
 
-  if (!readLineMode) { //only handle keypress if in keypress mode
+  if (key.name === 'n') {
+    toggleGamePlayOff();
+    promptUserForInputs(rl, startGame);
+  }
+
+  if (key.name === 'r' && board) {
+    startGame(board.getSize(), board.getDifficulty());
+  }
+
+  if (key.name === 'i' && board) {
+    board.printLongInstructions();
+  }
+
+  if (key.name === 'h' && board) { //hide long instructions
+    board.printViewBoardToConsole();
+  }
+  if (gamePlay) { // Only handle keypress if in gameplay
     handleKeyPress(key);
   }
 
 });
 
-//Set up functionality for keypress
+// Set up functionality for gameplay
 function handleKeyPress(key) {
   switch (key.name) {
     case 'up':
@@ -48,31 +63,25 @@ function handleKeyPress(key) {
     case 'space':
       board.uncoverSpace();
       break;
-    case 'n':
-      switchToReadLineMode(); //Prepares program to handle input for new game
-      startGame();
-      break;
-    case 'r':
-      startGame(board.size, board.difficulty);
-      break;
     case 'm':
       board.markSpace();
       break;
   }
+  if (board.isGameOver()) {
+    toggleGamePlayOff();
+  }
 }
 
-//initialize game board
+// Initialize game board
 let board;
 
 function startGame(size, difficulty) {
-  size = size || helpers.promptForBoardSize(rl);
-  difficulty = difficulty || helpers.promptForDifficultyLevel(rl);
+
   board = new MineBoard(size, difficulty);
 
   // Switch input from readline to listen to key events
-  switchToKeypressMode();
+  toggleGamePlayOn();
   board.printViewBoardToConsole();
 }
 
-
-startGame();
+promptUserForInputs(rl, startGame);
