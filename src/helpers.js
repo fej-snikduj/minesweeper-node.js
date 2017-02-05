@@ -1,5 +1,8 @@
 function promptForBoardSize(rl, nextFun, startGameFun) {
-  rl.question(`How big of board would you like to play with?  Please` +
+  rl.clearLine();
+  console.log("\x1B[2J");
+  console.log('Welcome to Minesweeper for Node.js!');
+  rl.question(`How big of board would you like to play with?  Please ` +
     `input a whole number (5 through 25)\n`, answer => {
       if (answer >= 5 && answer <= 25) {
         console.log(`Playing with board size ${answer}\n`);
