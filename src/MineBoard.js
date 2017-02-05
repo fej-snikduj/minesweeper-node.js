@@ -4,7 +4,7 @@ let _privateProps = new WeakMap();
 
 class MineBoard {
   constructor(size, difficulty) {
-    //set the display values
+    // Set the display values
     this.cursor = String.fromCharCode(9670);
     this.marker = String.fromCharCode(9873);
     this.uncoveredSpace = ' ';
@@ -14,6 +14,17 @@ class MineBoard {
     // Store props in WeakMap to restrict access to class methods
     let props = {};
     _privateProps.set(this, props);
+    // This map allows for easy iteration of all squares surrounding each square
+    props.relationalIndicesMap = [
+      {row: -1, col: -1},
+      {row: -1, col: 0},
+      {row: -1, col: 1},
+      {row: 0, col: -1},
+      {row: 0, col: 1},
+      {row: 1, col: -1},
+      {row: 1, col: 0},
+      {row: 1, col: 1},
+    ];
     props.size = size || 20;
     props.difficulty = difficulty || '1';
     props.totalNumOfSquares = props.size ** 2;
@@ -73,6 +84,7 @@ class MineBoard {
   }
 
   determineMineProximityNumbers(board) {
+    let relationalIndicesMap = _privateProps.get(this).relationalIndicesMap;
 
     for (var row = 0; row < board.length; row++) {
       for (var column = 0; column < board[row].length; column++) {
@@ -85,61 +97,14 @@ class MineBoard {
         //keep track of number of bombs adjacent to current indices
         var numOfBombsInVicinity = 0;
 
-        //check upper left
-        if (row - 1 >= 0 && column - 1 >= 0) {
-          if (board[row - 1][column - 1] === this.bomb) {
+        relationalIndicesMap.forEach(relIndex => {
+          let rowToCheck = row + relIndex.row;
+          let colToCheck = column + relIndex.col;
+          if (!this.isInBounds(rowToCheck, colToCheck)) return;
+          if (board[rowToCheck][colToCheck] === this.bomb) {
             numOfBombsInVicinity++;
           }
-        }
-
-        //check directly above
-        if (row - 1 >= 0) {
-          if (board[row - 1][column] === this.bomb) {
-            numOfBombsInVicinity++;
-          }
-        }
-
-        //check upper right
-        if (row - 1 >= 0 && column + 1 < board.length) {
-          if (board[row - 1][column + 1] === this.bomb) {
-            numOfBombsInVicinity++;
-          }
-        }
-
-        //check directly left
-        if (column - 1 >= 0) {
-          if (board[row][column - 1] === this.bomb) {
-            numOfBombsInVicinity++;
-          }
-        }
-
-        //check directly right
-        if (column + 1 < board.length) {
-          if (board[row][column + 1] === this.bomb) {
-            numOfBombsInVicinity++;
-          }
-        }
-
-        //check bottom left
-        if (row + 1 < board.length && column - 1 >= 0) {
-          if (board[row + 1][column - 1] === this.bomb) {
-            numOfBombsInVicinity++;
-          }
-        }
-
-        //check directly below
-        if (row + 1 < board.length) {
-          if (board[row + 1][column] === this.bomb) {
-            numOfBombsInVicinity++;
-          }
-        }
-
-        //check bottom right
-        if (row + 1 < board.length && column + 1 < board.length) {
-          if (board[row + 1][column + 1] === this.bomb) {
-            numOfBombsInVicinity++;
-          }
-        }
+        }, this);
 
         //label square with result
         board[row][column] = numOfBombsInVicinity;
@@ -160,6 +125,13 @@ class MineBoard {
     }
 
     return viewBoard;
+  }
+
+  isInBounds(row, col) {
+    let size = _privateProps.get(this).size;
+    let rowInBounds = row >= 0 && row < size ? true : false;
+    let colInBounds = col >= 0 && col < size ? true : false;
+    return rowInBounds && colInBounds;
   }
 
   printViewBoardToConsole() {
@@ -195,18 +167,17 @@ class MineBoard {
     //change cursor location based on direction
     switch(direction) {
       case 'up':
-        props.cursorRow = row - 1 >= 0 ? row - 1 : row;
+        props.cursorRow = this.isInBounds(row - 1, col) ? row - 1 : row;
         break;
       case 'down':
-        props.cursorRow = row + 1 < props.size ? row + 1 : row;
+        props.cursorRow = this.isInBounds(row + 1, col) ? row + 1 : row;
         break;
       case 'left':
-        props.cursorColumn = col - 1 >= 0 ? col - 1 : col;
+        props.cursorColumn = this.isInBounds(row, col - 1) ? col - 1 : col;
         break;
       case 'right':
-        props.cursorColumn = col + 1 < props.size ? col + 1 : col;
+        props.cursorColumn = this.isInBounds(row, col + 1) ? col + 1 : col;
     }
-    console.log(props.cursorRow, props.cursorColumn, 'row column')
     //reprint board to console
     this.printViewBoardToConsole();
 
@@ -269,57 +240,39 @@ class MineBoard {
 
     //if space is zero, uncover adjacent spaces as well
     if (mineBoard[row][col] === 0) {
-      uncoverAdjacentSpaces.call(this, row, col, {});
+      uncoverAdjacentSpaces(row, col, {}, this);
+      this.printViewBoardToConsole();
     }
+
 
 
     //Function to uncover adjacent spaces if space is not adjacent to any bombs
-    function uncoverAdjacentSpaces(rowToCheck, colToCheck, alreadyCoveredMap) {
-      let key = 'row' + rowToCheck + 'col' + colToCheck;
-      //if this spot has already been checked, return
-      if (alreadyCoveredMap[key]) {
-        return;
-      }
+    function uncoverAdjacentSpaces(row, col, alreadyCoveredMap, thisArg) {
+      // Space is a zero (not adjacent to any bombs)
+      // Uncover, increase count
+      viewBoard[row][col] = uncoveredSpace;
+      props.uncoveredCount++;
+      // Create key to mark spot as checked
+      let key = 'r' + row + 'c' + col;
       //add this spot to the checked list
       alreadyCoveredMap[key] = true;
-
-      //if this spot is out of bounds, return
-      if (rowToCheck >= size || colToCheck >= size || rowToCheck < 0 ||
-          colToCheck < 0) {
-        return;
-      }
-
-      //if this spot is a bomb, do nothing and return
-      if (mineBoard[rowToCheck][colToCheck] === bomb) {
-        return;
-      }
-
-      // Base case is when the space is anything but a zero
-      // Only continue if it is a zero
-      if(mineBoard[rowToCheck][colToCheck] !== 0) {
-        viewBoard[rowToCheck][colToCheck] = mineBoard[rowToCheck][colToCheck];
-        props.uncoveredCount++;
-        return;
-      }
-
-      // Space is a zero
-      // Uncover, increase count, and continue
-      viewBoard[rowToCheck][colToCheck] = uncoveredSpace;
-      props.uncoveredCount++;
-
-      // Call function on all adjacent spaces
-      uncoverAdjacentSpaces(rowToCheck - 1, colToCheck - 1, alreadyCoveredMap);
-      uncoverAdjacentSpaces(rowToCheck - 1, colToCheck, alreadyCoveredMap);
-      uncoverAdjacentSpaces(rowToCheck - 1, colToCheck + 1, alreadyCoveredMap);
-      uncoverAdjacentSpaces(rowToCheck, colToCheck - 1, alreadyCoveredMap);
-      uncoverAdjacentSpaces(rowToCheck, colToCheck + 1, alreadyCoveredMap);
-      uncoverAdjacentSpaces(rowToCheck + 1, colToCheck - 1, alreadyCoveredMap);
-      uncoverAdjacentSpaces(rowToCheck + 1, colToCheck, alreadyCoveredMap);
-      uncoverAdjacentSpaces(rowToCheck + 1, colToCheck + 1, alreadyCoveredMap);
-    }
-
-
+      /*
+      Check Adjacent Squares.  Uncover all non-bombs, and recurse on zeros
+      */
+      props.relationalIndicesMap.forEach(relIndex => {
+        let rowToCheck = row + relIndex.row;
+        let colToCheck = col + relIndex.col;
+        let keyToCheck = 'r' + rowToCheck + 'c' + colToCheck;
+        if (!thisArg.isInBounds(rowToCheck, colToCheck)) return;
+        if (keyToCheck in alreadyCoveredMap) return;
+        if (mineBoard[rowToCheck][colToCheck] > 0) {
+          viewBoard[rowToCheck][colToCheck] = mineBoard[rowToCheck][colToCheck];
+        } else { // Space equals zero, so recurse
+          uncoverAdjacentSpaces(rowToCheck, colToCheck, alreadyCoveredMap, thisArg);
+        }
+      }, this);
   }
+}
 
   gameOver() {
     this.clearConsole();
@@ -341,10 +294,10 @@ class MineBoard {
   }
 }
 
-// var x = new MineBoard(10, '1');
-// var y = _privateProps.get(x);
-// console.log(y)
-//
+var x = new MineBoard(10, '1');
+var y = _privateProps.get(x);
+console.log(y)
+
 // console.log(String.fromCharCode(9762))
 
 
