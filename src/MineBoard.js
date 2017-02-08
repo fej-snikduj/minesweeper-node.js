@@ -281,7 +281,7 @@ class MineBoard {
     });
 
     console.log('GAME OVER');
-    this.printShortInstructions();
+    this.printLongInstructions();
 
     // Update Game Over Boolean
     _privateProps.get(this).gameOver = true;
@@ -306,8 +306,7 @@ class MineBoard {
     }, this);
 
     console.log('YOU WIN!!!');
-    console.log(_privateProps.get(this).uncoveredCount)
-    this.printShortInstructions();
+    this.printLongInstructions();
 
     // Update Game Over Boolean
     _privateProps.get(this).gameOver = true;
