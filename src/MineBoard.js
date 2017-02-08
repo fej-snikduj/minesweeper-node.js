@@ -27,7 +27,7 @@ class MineBoard {
     ];
     props.size = size || 20;
     props.difficulty = difficulty || '1';
-    props.totalNumOfSquares = props.size ** 2;
+    props.totalNumOfSquares = props.size * props.size;
     props.numberOfMines = this.determineNumberOfMines();
     // Generate new board requires number of mines to be determined first
     props.mineBoard = this.generateNewBoard();

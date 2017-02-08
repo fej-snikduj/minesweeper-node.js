@@ -4,7 +4,7 @@
   "description": "A text based minesweeper game for the terminal using node.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node index.js"
   },
   "repository": {
@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/fej-snikduj/minesweeper-node.js#readme",
   "devDependencies": {
-    "eslint": "^3.14.1"
+    "chai": "^3.5.0",
+    "eslint": "^3.14.1",
+    "mocha": "^3.2.0"
   }
 }
