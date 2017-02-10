@@ -4,7 +4,7 @@
   "description": "A text based minesweeper game for the terminal using node.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "NODE_ENV=test mocha",
     "start": "node index.js"
   },
   "repository": {

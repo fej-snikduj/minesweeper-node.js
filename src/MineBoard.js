@@ -348,3 +348,8 @@ class MineBoard {
 module.exports = {
   MineBoard,
 };
+
+// Only export _privateProps for testing
+if (process.env.NODE_ENV === 'test') {
+  module.exports._privateProps = _privateProps;
+}
