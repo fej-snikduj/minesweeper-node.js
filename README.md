@@ -1,3 +1,5 @@
+![alt text](https://circleci.com/gh/fej-snikduj/minesweeper-nodejs.svg?style=shield&circle-token=:circle-token)
+
 # minesweeper-node.js
 Minesweeper game built in node.js for terminal.
 
