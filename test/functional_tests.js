@@ -1,61 +1,10 @@
 const chai = require('chai');
 const assert = chai.assert;
-const { MineBoard, _privateProps } = require('../src/MineBoard.js');
-const board = new MineBoard(5, '1');
+const { MineBoard } = require('../src/MineBoard.js');
 const { tests } = require('./view_test_boards.js');
+const {captureLoggedMessage, createTestBoard } = require('./test_helpers.js');
 
-
-function captureLoggedMessage(context, method, ...args) {
-    let oldLog = console.log, loggedMessage = [];
-    let size = context.getSize();
-
-    console.log = function(s) {
-
-      // Only capture the printed board by comparing string length to board size
-      if (s.length === size * 2 - 1) {
-        loggedMessage.push(s);
-      }
-    };
-
-    context[method].call(context, ...args);
-    console.log = oldLog;
-
-    // If multiple boards were printed to console, only take the latest
-    loggedMessage = loggedMessage.length > size ? loggedMessage.slice(size) :
-        loggedMessage;
-
-    return loggedMessage.join('\n');
-}
-
-
-function createTestBoard(boardInstance, makeSimpleBoard) {
-  let props = _privateProps.get(boardInstance);
-  let b = boardInstance.bomb; //mine
-  if (makeSimpleBoard) {
-    props.mineBoard = [
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [0,0,0,0,0,0],
-      [1,1,0,0,0,0],
-      [b,1,0,0,0,0],
-    ];
-  } else {
-    props.mineBoard = [
-      [0,1,1,2,1,1],
-      [0,1,b,3,b,1],
-      [0,1,2,b,2,1],
-      [0,0,1,1,1,0],
-      [1,1,0,0,0,0],
-      [b,1,0,0,0,0],
-    ];
-  }
-  return props.mineBoard;
-}
-
-
-
-describe('MineBoard', function() {
+describe('Functional', function() {
   describe('Instantiation', function() {
     it('should return an instance of itself', function() {
       let board = new MineBoard();
