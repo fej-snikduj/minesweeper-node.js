@@ -59,8 +59,43 @@ const tests = {
     [s,s,s,s,s].join(' '),
   ].join('\n'),
 
+  test7: [ //uncover 0,0
+    [c,1,s,s,s,s].join(' '),
+    [u,1,s,s,s,s].join(' '),
+    [u,1,2,s,2,1].join(' '),
+    [u,u,1,1,1,u].join(' '),
+    [1,1,u,u,u,u].join(' '),
+    [s,1,u,u,u,u].join(' '),
+  ].join('\n'),
 
+  test8: [ //uncover 0,1
+    [s,1,c,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+  ].join('\n'),
+
+  test9: [ //mark 0,0 - try to uncover - move cursor right
+    [m,c,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+  ].join('\n'),
+
+  test10: [ //mark 0,0 - try to uncover - move cursor right
+    [u,1,1,2,1,1].join(' '),
+    [u,1,b,3,b,1].join(' '),
+    [u,1,2,b,2,1].join(' '),
+    [u,u,1,1,1,u].join(' '),
+    [1,1,u,u,u,u].join(' '),
+    [b,1,u,u,u,u].join(' '),
+  ].join('\n'),
 };
+
 
 
 module.exports  = {
