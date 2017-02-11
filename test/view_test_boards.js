@@ -94,6 +94,24 @@ const tests = {
     [1,1,u,u,u,u].join(' '),
     [b,1,u,u,u,u].join(' '),
   ].join('\n'),
+
+  test11: [ //uncover 0,1
+    [u,u,u,u,u,u].join(' '),
+    [u,u,u,u,u,u].join(' '),
+    [u,u,u,u,u,u].join(' '),
+    [u,u,u,u,u,u].join(' '),
+    [1,1,u,u,u,u].join(' '),
+    [m,1,u,u,u,u].join(' '),
+  ].join('\n'),
+
+  test12: [ //mark 0,0 - try to uncover - move cursor right
+    [s,c,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+    [s,s,s,s,s,s].join(' '),
+  ].join('\n'),
 };
 
 

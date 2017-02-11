@@ -7,32 +7,49 @@ const { tests } = require('./view_test_boards.js');
 
 function captureLoggedMessage(context, method, ...args) {
     let oldLog = console.log, loggedMessage = [];
+    let size = context.getSize();
 
     console.log = function(s) {
 
       // Only capture the printed board by comparing string length to board size
-      if (s.length === context.getSize() * 2 - 1) {
+      if (s.length === size * 2 - 1) {
         loggedMessage.push(s);
       }
     };
 
     context[method].call(context, ...args);
     console.log = oldLog;
+
+    // If multiple boards were printed to console, only take the latest
+    loggedMessage = loggedMessage.length > size ? loggedMessage.slice(size) :
+        loggedMessage;
+
     return loggedMessage.join('\n');
 }
 
 
-function createTestBoard(boardInstance) {
+function createTestBoard(boardInstance, makeSimpleBoard) {
   let props = _privateProps.get(boardInstance);
   let b = boardInstance.bomb; //mine
-  props.mineBoard = [
-    [0,1,1,2,1,1],
-    [0,1,b,3,b,1],
-    [0,1,2,b,2,1],
-    [0,0,1,1,1,0],
-    [1,1,0,0,0,0],
-    [b,1,0,0,0,0],
-  ];
+  if (makeSimpleBoard) {
+    props.mineBoard = [
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0],
+      [1,1,0,0,0,0],
+      [b,1,0,0,0,0],
+    ];
+  } else {
+    props.mineBoard = [
+      [0,1,1,2,1,1],
+      [0,1,b,3,b,1],
+      [0,1,2,b,2,1],
+      [0,0,1,1,1,0],
+      [1,1,0,0,0,0],
+      [b,1,0,0,0,0],
+    ];
+  }
   return props.mineBoard;
 }
 
@@ -128,6 +145,37 @@ describe('MineBoard', function() {
       assert.deepEqual(
         captureLoggedMessage(board, 'uncoverSpace'),
         tests.test10
+      );
+    });
+
+    it('should call winGame if all spaces are uncovered except mines', function () {
+      let board = new MineBoard(6, '1');
+      createTestBoard(board, true);
+      assert.deepEqual(
+        captureLoggedMessage(board, 'uncoverSpace'),
+        tests.test11
+      );
+    });
+  });
+
+  describe('Mark Space Method', function() {
+    it('Should mark a space', function() {
+      let board = new MineBoard(6, '1');
+      createTestBoard(board);
+      captureLoggedMessage(board, 'markSpace');
+      assert.deepEqual(
+        captureLoggedMessage(board, 'moveCursor', 'right'),
+        tests.test9
+      );
+    });
+    it('Should unmark a space', function() {
+      let board = new MineBoard(6, '1');
+      createTestBoard(board);
+      captureLoggedMessage(board, 'markSpace');
+      captureLoggedMessage(board, 'markSpace');
+      assert.deepEqual(
+        captureLoggedMessage(board, 'moveCursor', 'right'),
+        tests.test12
       );
     });
   });
