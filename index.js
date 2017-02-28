@@ -1,7 +1,7 @@
 'use strict';
 const { promptForBoardSize, promptForDifficultyLevel, promptUserForInputs } =
     require('./src/helpers');
-const { MineBoard } = require('./src/MineBoard');
+const { ViewBoard } = require('./src/ViewBoard');
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
@@ -35,7 +35,7 @@ process.stdin.on('keypress', (str, key) => {
   }
 
   if (key.name === 'r' && board) {
-    startGame(board.getSize(), board.getDifficulty());
+    startGame(board.size, board.difficulty);
   }
 
   if (key.name === 'i' && board) {
@@ -63,7 +63,7 @@ function handleKeyPress(key) {
     case 'space':
       board.uncoverSpace();
       break;
-    case 'm':
+    case 'x':
       board.markSpace();
       break;
   }
@@ -77,7 +77,7 @@ let board;
 
 function startGame(size, difficulty) {
 
-  board = new MineBoard(size, difficulty);
+  board = new ViewBoard(size, difficulty);
 
   // Switch input from readline to listen to key events
   toggleGamePlayOn();

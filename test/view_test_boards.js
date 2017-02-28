@@ -1,11 +1,10 @@
-const { MineBoard, _privateProps } = require('../src/MineBoard.js');
-const board = new MineBoard(5, '1');
+const { ViewBoard } = require('../src/ViewBoard.js');
+const board = new ViewBoard(5, '1');
 let u = board.uncoveredSpace;
 let b = board.bomb;
 let s = board.coveredSpace;
 let m = board.marker;
 let c = board.cursor;
-let j = ' ';
 
 
 const tests = {
@@ -60,7 +59,7 @@ const tests = {
   ].join('\n'),
 
   test7: [ //uncover 0,0
-    [c,1,s,s,s,s].join(' '),
+    [u,1,s,s,s,s].join(' '),
     [u,1,s,s,s,s].join(' '),
     [u,1,2,s,2,1].join(' '),
     [u,u,1,1,1,u].join(' '),

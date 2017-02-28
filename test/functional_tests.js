@@ -1,28 +1,15 @@
 const chai = require('chai');
 const assert = chai.assert;
-const { MineBoard } = require('../src/MineBoard.js');
+const { ViewBoard } = require('../src/ViewBoard.js');
 const { tests } = require('./view_test_boards.js');
 const {captureLoggedMessage, createTestBoard } = require('./test_helpers.js');
 
 describe('Functional', function() {
-  describe('Instantiation', function() {
-    it('should return an instance of itself', function() {
-      let board = new MineBoard();
-      assert.instanceOf(board, MineBoard, 'board is an instance of MineBoard');
-    });
-
-    it('should have the proper size and difficulty values', function () {
-      let board = new MineBoard(22, '2');
-      assert.equal(board.getSize(), 22, 'size should equal 22');
-      assert.equal(board.getDifficulty(), '2', 'difficulty should equal 2');
-    });
-  });
-
   describe('Move Cursor method', function() {
     // Methods to test [moveCursor, uncoverSpace, markSpace]
     // test1 through test 6
     it('should only allow cursor movements within board', function () {
-      let board = new MineBoard(5, '1');
+      let board = new ViewBoard(5, '1');
       assert.deepEqual(
         captureLoggedMessage(board, 'moveCursor', 'right'),
         tests.test1
@@ -53,17 +40,17 @@ describe('Functional', function() {
   describe('Uncover Space Method', function() {
     it('should correctly cascade when a mine with zero surround mines is uncovered',
         function() {
-      let board = new MineBoard(6, '1');
+      let board = new ViewBoard(6, '1');
       createTestBoard(board);
       assert.deepEqual(
-        captureLoggedMessage(board, 'uncoverSpace'),
+        captureLoggedMessage(board, 'uncoverSpace', true),
         tests.test7
       );
     });
 
     it('should not cascade when a mine touching another mine is uncovered',
         function() {
-      let board = new MineBoard(6, '1');
+      let board = new ViewBoard(6, '1');
       createTestBoard(board);
       captureLoggedMessage(board, 'moveCursor', 'right');
       captureLoggedMessage(board, 'uncoverSpace');
@@ -74,7 +61,7 @@ describe('Functional', function() {
     });
 
     it('should not uncover a marked space', function () {
-      let board = new MineBoard(6, '1');
+      let board = new ViewBoard(6, '1');
       createTestBoard(board);
       captureLoggedMessage(board, 'markSpace');
       captureLoggedMessage(board, 'uncoverSpace');
@@ -85,7 +72,7 @@ describe('Functional', function() {
     });
 
     it('should call gameOver if mine is uncovered', function () {
-      let board = new MineBoard(6, '1');
+      let board = new ViewBoard(6, '1');
       createTestBoard(board);
       captureLoggedMessage(board, 'moveCursor', 'right');
       captureLoggedMessage(board, 'moveCursor', 'right');
@@ -98,7 +85,7 @@ describe('Functional', function() {
     });
 
     it('should call winGame if all spaces are uncovered except mines', function () {
-      let board = new MineBoard(6, '1');
+      let board = new ViewBoard(6, '1');
       createTestBoard(board, true);
       assert.deepEqual(
         captureLoggedMessage(board, 'uncoverSpace'),
@@ -109,7 +96,7 @@ describe('Functional', function() {
 
   describe('Mark Space Method', function() {
     it('Should mark a space', function() {
-      let board = new MineBoard(6, '1');
+      let board = new ViewBoard(6, '1');
       createTestBoard(board);
       captureLoggedMessage(board, 'markSpace');
       assert.deepEqual(
@@ -118,7 +105,7 @@ describe('Functional', function() {
       );
     });
     it('Should unmark a space', function() {
-      let board = new MineBoard(6, '1');
+      let board = new ViewBoard(6, '1');
       createTestBoard(board);
       captureLoggedMessage(board, 'markSpace');
       captureLoggedMessage(board, 'markSpace');

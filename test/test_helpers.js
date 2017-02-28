@@ -1,8 +1,6 @@
-const { _privateProps } = require('../src/MineBoard.js');
-
 function captureLoggedMessage(context, method, ...args) {
     let oldLog = console.log, loggedMessage = [];
-    let size = context.getSize();
+    let size = context.size;
 
     console.log = function(s) {
 
@@ -24,10 +22,9 @@ function captureLoggedMessage(context, method, ...args) {
 
 
 function createTestBoard(boardInstance, makeSimpleBoard) {
-  let props = _privateProps.get(boardInstance);
   let b = boardInstance.bomb; //mine
   if (makeSimpleBoard) {
-    props.mineBoard = [
+    boardInstance.mineBoard = [
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
       [0,0,0,0,0,0],
@@ -36,7 +33,7 @@ function createTestBoard(boardInstance, makeSimpleBoard) {
       [b,1,0,0,0,0],
     ];
   } else {
-    props.mineBoard = [
+    boardInstance.mineBoard = [
       [0,1,1,2,1,1],
       [0,1,b,3,b,1],
       [0,1,2,b,2,1],
@@ -45,7 +42,7 @@ function createTestBoard(boardInstance, makeSimpleBoard) {
       [b,1,0,0,0,0],
     ];
   }
-  return props.mineBoard;
+  return boardInstance.mineBoard;
 }
 
 module.exports = {
