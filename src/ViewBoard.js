@@ -115,22 +115,31 @@ class ViewBoard extends MineBoard {
       return;
     }
 
-    // If space is anything but a zero, uncover it
-    if (mineBoard[row][col] !== 0) {
-      viewBoard[row][col] = mineBoard[row][col];
-      this.uncoveredCount++;
-      this.printViewBoardToConsole(false);
-      this.checkForWinGame();
-      return;
-    }
 
-    // If space is zero, uncover adjacent spaces as well
-    if (mineBoard[row][col] === 0) {
-      uncoverAdjacentSpaces.call(this, row, col);
-      this.printViewBoardToConsole(false);
-      this.checkForWinGame();
-      return;
-    }
+      // If space is anything but a zero, uncover it
+     if (mineBoard[row][col] !== 0) {
+         if (viewBoard[row][col] !== mineBoard[row][col]) {
+             viewBoard[row][col] = mineBoard[row][col];
+             this.uncoveredCount++;
+             this.printViewBoardToConsole(false);
+             this.checkForWinGame();
+         } else {
+             this.printViewBoardToConsole(true);
+         }
+         return;
+     }
+
+      // If space is zero, uncover adjacent spaces as well
+     if (mineBoard[row][col] === 0) {
+         if (viewBoard[row][col] !== this.uncoveredSpace) {
+             uncoverAdjacentSpaces.call(this, row, col);
+             this.printViewBoardToConsole(false);
+             this.checkForWinGame();
+         } else {
+             this.printViewBoardToConsole(true);
+         }
+         return;
+     }
 
 
     // Function to uncover adjacent spaces if space is not adjacent to any bombs
